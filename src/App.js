@@ -2,23 +2,21 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+
+
 class Product extends Component {
 
   constructor(props) {
     super(props);
     this.state = {qty:0};
     this.buy = this.buy.bind(this);
-    this.show = this.show.bind(this);
     this.bawas = this.bawas.bind(this);
   }
 
   buy() {
     this.setState({qty: this.state.qty + 1});
     this.props.handleTotal(this.props.price);
-  }
-
-  show() {
-  this.props.handleShow(this.props.name);
+    this.props.handleAdd(this.props.name);
   }
 
   bawas() {
@@ -30,45 +28,12 @@ class Product extends Component {
     return (
       <div>
         <p>{this.props.name} = ${this.props.price} </p>
-        <button onClick={this.buy}>Buy</button>
-        <button onClick={this.show}>Show</button>
-        <button onClick={this.bawas}>bawas</button>
-        <h1>{this.state.qty}</h1>
+        <button onClick={this.buy}>Add</button>
       </div>
     )
   }
 }
 
-class ProductForm extends Component {
-  constructor(props) {
-    super(props);
-    this.submit = this.submit.bind(this);
-  }
-
-  submit(e) {
-    e.preventDefault();
-    var product = {
-      name:this.refs.name.value,
-      price:parseInt(this.refs.price.value)
-    };
-    this.props.handleCreate(product)
-    alert(product.name + " has been added!");
-    this.refs.name.value = "";
-    this.refs.price.value = "";
-  }
-
-  render() {
-    return (
-      <form onSubmit={this.submit}>
-        <input type="text" placeholder="Prod name" ref="name" />
-        <input type="text" placeholder="Prod price" ref="price" />
-        <br/>
-        <button>Create Product</button>
-      </form>
-    );
-  }
-
-}
 
 class ProductList extends Component {
 
@@ -76,49 +41,69 @@ constructor(props) {
   super(props);
   this.state={total:0,
     productList: [
-        {name: "Android", price: 20},
-        {name: "Phone", price: 10},
-        {name: "Mobile", price: 50},
-        {name: "Laptop", price: 90}
-      ]};
-
+        {name: "Rice", price: 10},
+        {name: "Adobo", price: 30},
+        {name: "Laing", price: 20},
+        {name: "Bulalo", price: 90}
+      ], cartList: []};
   this.calcTotal = this.calcTotal.bind(this);
-  this.createProduct = this.createProduct.bind(this);
+  this.addProduct = this.addProduct.bind(this);
+  this.removeProduct = this.removeProduct.bind(this);
 }
 
 calcTotal(price) {
   this.setState({total: this.state.total + price});   
 }
 
-showProduct(name) {
-  alert ('You bought ' + name);
+addProduct(name) {
+  console.log(name + ' added to cart!')
+  this.setState({cartList: this.state.cartList.concat(name)});
 }
 
-createProduct(product) {
-  this.setState({ 
-    productList: this.state.productList.concat(product)
-  });
+removeProduct(name) {
+  console.log(name + ' removed from cart!')
+  this.setState({cartList: this.state.cartList.concat(name)});
 }
 
   render() {
     var component = this;
     var products = this.state.productList.map(function(prod){
         return (
-            <Product name={prod.name} price={prod.price} handleShow={component.showProduct} handleTotal={component.calcTotal} />
+            <Product name={prod.name} price={prod.price} handleAdd={component.addProduct} handleTotal={component.calcTotal} />
         );
     });
 
+
     return (
       <div>
-      <ProductForm handleCreate={this.createProduct}/>
         {products}
+        <Cart cartItems={this.state.cartList} cartList={component.state.cartList}/>
         <Total total={component.state.total}/> 
       </div>
     )
   }
 }
 
-
+class Cart extends Component {
+  render() {
+    var cartItems = this.props.cartItems.map(function(cart){
+    return (
+      <div>
+        {cart}
+      </div>
+    );
+    });
+    console.log(this.props.cartList)
+    return (
+      <div> 
+        <h1>Items selected:</h1>
+          <ul>
+            {cartItems}
+          </ul>
+      </div>
+    )
+  }
+}
 
 class Total extends Component {
   render() {
