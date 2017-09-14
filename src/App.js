@@ -30,7 +30,7 @@ class Product extends Component {
         <p>{this.props.name} = ${this.props.price} </p>
         <button onClick={this.buy}>Add</button>
       </div>
-    )
+    );
   }
 }
 
