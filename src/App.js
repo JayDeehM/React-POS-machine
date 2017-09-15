@@ -98,7 +98,7 @@ class Cart extends Component {
       <div> 
         <h1>Items selected:</h1>
           <ul>
-            {cartItems}
+            <p>{cartItems}</p> <p>{this.props.qty}</p>
           </ul>
       </div>
     )
